@@ -2,7 +2,7 @@
 
 # Reproduce Steps:
 
-## Define a collection that has a field with a validation function that returns a very long string.
+- Define a collection that has a field with a validation function that returns a very long string.
 
 ```ts
 const Users: CollectionConfig = {
@@ -23,12 +23,13 @@ const Users: CollectionConfig = {
   ],
 };
 ```
+- Head to admin UI to create data for that collection
 
-## Expectation
+# Expectation
 
 In admin UI, when creating a user, the "fullName" field error will be visible to admin in mobile mode, and all characters of the string are visible.
 
-## Actual
+# Actual
 
 Bug 1: The long text does not wrap and thus some of the characters are cut off.
 

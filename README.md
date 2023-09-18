@@ -1,42 +1,38 @@
-# Payload Blank Template
+# Payload CMS Reproduce Field Validation Not Showing In Mobile Admin UI
 
-A blank template for [Payload](https://github.com/payloadcms/payload) to help you get up and running quickly. This repo may have been created by running `npx create-payload-app` and selecting the "blank" template or by cloning this template on [Payload Cloud](https://payloadcms.com/new/clone/blank).
+# Reproduce Steps:
 
-See the official [Examples Directory](https://github.com/payloadcms/payload/tree/master/examples) for details on how to use Payload in a variety of different ways.
+## Define a collection that has a field with a validation function that returns a very long string.
 
-## Development
+```ts
+const Users: CollectionConfig = {
+  slug: "users",
+  auth: true,
+  admin: {
+    useAsTitle: "email",
+  },
+  fields: [
+    {
+      name: "fullName",
+      type: "text",
+      validate: () => {
+        return `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+    `;
+      },
+    },
+  ],
+};
+```
 
-To spin up the project locally, follow these steps:
+## Expectation
 
-1. First clone the repo
-1. Then `cd YOUR_PROJECT_REPO && cp .env.example .env`
-1. Next `yarn && yarn dev` (or `docker-compose up`, see [Docker](#docker))
-1. Now `open http://localhost:8000/admin` to access the admin panel
-1. Create your first admin user using the form on the page
+In admin UI, when creating a user, the "fullName" field error will be visible to admin in mobile mode, and all characters of the string are visible.
 
-That's it! Changes made in `./src` will be reflected in your app.
+## Actual
 
-### Docker
+Bug 1: The long text does not wrap and thus some of the characters are cut off.
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this project locally. To do so, follow these steps:
+![Ineligible text](assets/ineligible-text.png)
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
-
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
-
-## Production
-
-To run Payload in production, you need to build and serve the Admin panel. To do so, follow these steps:
-
-1. First invoke the `payload build` script by running `yarn build` or `npm run build` in your project root. This creates a `./build` directory with a production-ready admin bundle.
-1. Then run `yarn serve` or `npm run serve` to run Node in production and serve Payload from the `./build` directory.
-
-### Deployment
-
-The easiest way to deploy your project is to use [Payload Cloud](https://payloadcms.com/new/import), a one-click hosting solution to deploy production-ready instances of your Payload apps directly from your GitHub repo. You can also deploy your app manually, check out the [deployment documentation](https://payloadcms.com/docs/production/deployment) for full details.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+Bug 2: In mobile view, the error message does not show up at all.
+![Ineligible text in mobile view](assets/ineligible-text-in-mobile-view.png)
